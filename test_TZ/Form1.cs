@@ -57,6 +57,10 @@ namespace test_TZ
             }
         }
 
+        /// <summary>
+        /// Метод для отрисовывания полигонов на объекте picturebox1. 
+        /// </summary>
+        /// <param name="pointsForPaint">Точки для отрисовывания полигонов</param>
         public void paintOnPicture(List<Point> pointsForPaint)
         {
             Point[] pointsArray = new Point[pointsForPaint.Count];
@@ -69,6 +73,10 @@ namespace test_TZ
             pictureBox1.CreateGraphics().FillPolygon(Brushes.LightGray, pointsArray);
         }
 
+        /// <summary>
+        /// Метод для отрисовывания полигонов на объекте picturebox1.
+        /// </summary>
+        /// <param name="polygons">Полигоны для отрисосвывания</param>
         public void paintOnPicture(List<Polygon> polygons)
         {
             Point[] pointsArray;
@@ -98,6 +106,14 @@ namespace test_TZ
             }
         }
 
+        /// <summary>
+        /// Алгоритм проверки пересечения отрезков. По правилу Крамера.
+        /// </summary>
+        /// <param name="p1">Первая точка первого отрезка</param>
+        /// <param name="p2">Вторая точка первого отрезка</param>
+        /// <param name="p3">Первая точка второго отрезка</param>
+        /// <param name="p4">Вторая точка второго отрезка</param>
+        /// <returns></returns>
         public bool isCrossLine(Point p1, Point p2, Point p3, Point p4)
         {
             double d;
@@ -122,6 +138,12 @@ namespace test_TZ
 
         }
 
+        /// <summary>
+        /// Проверка на нахождение точки внутри полигона, либо снаружи. Метод трассирвоки луча. Учет числа пересечений.
+        /// </summary>
+        /// <param name="polygons">Полигоны</param>
+        /// <param name="point">Точка проверки</param>
+        /// <returns></returns>
         public bool checkPointInPolygon(List<Polygon> polygons, Point point)
         {
             int checkForParity = 0;
@@ -190,6 +212,9 @@ namespace test_TZ
             }
         }
 
+        /// <summary>
+        /// Очистка элемента picturebox1 и polygons.
+        /// </summary>
         public void clearAll()
         {
             polygons.Clear();
