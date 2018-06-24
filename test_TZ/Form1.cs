@@ -15,20 +15,25 @@ namespace test_TZ
 {
     public partial class Form1 : Form
     {
-        List<Point> pointsAll;
+        List<Point> pointsForPaint;
+        List<Polygon> polygons;
+        Polygon polygon;
 
         public Form1()
         {
             InitializeComponent();
-            pointsAll = new List<Point>();
 
+            pointsForPaint = new List<Point>();
+            polygons = new List<Polygon>();
+            polygon = new Polygon();
         }
 
         private void pictureBox1_MouseDown(object sender, MouseEventArgs e)
         {
             if (checkClick.Checked == false)
             {
-                pointsAll.Add(new Point(e.X, e.Y));
+                pointsForPaint.Add(new Point(e.X, e.Y));
+                polygon.points.Add(new Point(e.X, e.Y));
 
                 pictureBox1.CreateGraphics().FillRectangle(Brushes.Black, e.X, e.Y, 2, 2);
 
@@ -38,9 +43,13 @@ namespace test_TZ
 
         private void button1_Click(object sender, EventArgs e)
         {
-            if (pointsAll.Count != 0)
+            if (pointsForPaint.Count != 0)
             {
-                paintsOnPicture(pointsAll);
+                polygons.Add(polygon);
+                paintOnPicture(pointsForPaint);
+
+                pointsForPaint.Clear();
+                polygon = new Polygon();
             }
             else
             {
@@ -48,7 +57,7 @@ namespace test_TZ
             }
         }
 
-        public void paintsOnPicture(List<Point> pointsForPaint)
+        public void paintOnPicture(List<Point> pointsForPaint)
         {
             Point[] pointsArray = new Point[pointsForPaint.Count];
             for (int i = 0; i < pointsForPaint.Count; i++)
@@ -58,6 +67,23 @@ namespace test_TZ
 
             pictureBox1.CreateGraphics().DrawPolygon(Pens.Black, pointsArray);
             pictureBox1.CreateGraphics().FillPolygon(Brushes.LightGray, pointsArray);
+        }
+
+        public void paintOnPicture(List<Polygon> polygons)
+        {
+            Point[] pointsArray;
+
+            foreach (Polygon polygon in polygons)
+            {
+                pointsArray = new Point[polygon.points.Count];
+
+                for (int i = 0; i < polygon.points.Count; i++)
+                {
+                    pointsArray[i] = polygon.points[i];
+                }
+                pictureBox1.CreateGraphics().DrawPolygon(Pens.Black, pointsArray);
+                pictureBox1.CreateGraphics().FillPolygon(Brushes.LightGray, pointsArray);
+            }
         }
 
         private void checkClick_CheckedChanged(object sender, EventArgs e)
@@ -74,45 +100,44 @@ namespace test_TZ
 
         public bool isCrossLine(Point p1, Point p2, Point p3, Point p4)
         {
-            long x;
-            long y;
+            double d;
 
-            long dx1 = p2.X - p1.X;
-            long dy1 = p2.Y - p1.Y;
-            long dx2 = p4.X - p3.X;
-            long dy2 = p4.Y - p3.Y;
+            double dx1 = p1.X - p2.X;
+            double dy1 = p1.Y - p2.Y;
+            double dx2 = p4.X - p3.X;
+            double dy2 = p4.Y - p3.Y;
 
-            x = dy1 * dx2 - dy2 * dx1;
+            d = dx1 * dy2 - dx2 * dy1;
 
-            if (x == 0 || dx2 == 0)
-                return
-                    false;
+            if (d == 0)
+                if (p1 == p3 || p1 == p4 || p2 == p3 || p2 == p4)
+                    return true;
+                else
+                    return false;
 
-            y = p3.X * p4.Y - p3.Y * p4.X;
-            x = ((p1.X * p2.Y - p1.Y * p2.X) * dx2 - y * dx1) / x;
-            y = (dy2 * x - y) / dx2;
+            double u1 = ((p4.X - p2.X) * (p4.Y - p3.Y) - (p4.X - p3.X) * (p4.Y - p2.Y)) / d;
+            double u2 = ((p1.X - p2.X) * (p4.Y - p2.Y) - (p4.X - p2.X) * (p1.Y - p2.Y)) / d;
 
-            return
-                ((p1.X <= x && p2.X >= x) || 
-                (p2.X <= x && p1.X >= x)) && 
-                ((p3.X <= x && p4.X >= x) || 
-                (p4.X <= x && p3.X >= x));
+            return (u1 >= 0 && u1 <= 1 && u2 >= 0 && u2 <= 1);
 
         }
 
-        public bool checkPointInPolygon(List<Point> points, Point point)
+        public bool checkPointInPolygon(List<Polygon> polygons, Point point)
         {
             int checkForParity = 0;
 
-            for (int i = 0; i < points.Count; i++)
+            foreach (Polygon polygon in polygons)
             {
-                if (i == points.Count - 1)
+                for (int i = 0; i < polygon.points.Count; i++)
                 {
-                    if (isCrossLine(points[i], points[0], point, new Point(pictureBox1.Size.Width, point.Y)))
+                    if (i == polygon.points.Count - 1)
+                    {
+                        if (isCrossLine(polygon.points[i], polygon.points[0], point, new Point(pictureBox1.Size.Width, point.Y)))
+                            checkForParity++;
+                    }
+                    else if (isCrossLine(polygon.points[i], polygon.points[i + 1], point, new Point(pictureBox1.Size.Width, point.Y)))
                         checkForParity++;
                 }
-                else if (isCrossLine(points[i], points[i + 1], point, new Point(pictureBox1.Size.Width, point.Y)))
-                    checkForParity++;
             }
 
             if (checkForParity % 2 == 0)
@@ -124,7 +149,7 @@ namespace test_TZ
         {
             if (checkClick.Checked == true)
             {
-                if (checkPointInPolygon(pointsAll, new Point(e.X, e.Y)))
+                if (checkPointInPolygon(polygons, new Point(e.X, e.Y)))
                     label1.Text = "Внутри полигона";
                 else
                     label1.Text = "Снаружи полигона";
@@ -137,10 +162,12 @@ namespace test_TZ
 
             if (saveFileXML.ShowDialog() == DialogResult.OK)
             {
-                XmlSerializer xs = new XmlSerializer(typeof(List<Point>));
+                XmlSerializer xs = new XmlSerializer(typeof(List<Polygon>));
 
                 Stream writer = new FileStream(saveFileXML.FileName, FileMode.Create);
-                xs.Serialize(writer, pointsAll);
+
+                xs.Serialize(writer, polygons);
+
                 writer.Close();
             }
         }
@@ -151,20 +178,27 @@ namespace test_TZ
 
             if (openFileXML.ShowDialog() == DialogResult.OK)
             {
-                XmlSerializer xs = new XmlSerializer(typeof(List<Point>));
+                XmlSerializer xs = new XmlSerializer(typeof(List<Polygon>));
 
                 Stream reader = new FileStream(openFileXML.FileName, FileMode.Open);
-                pointsAll = (List<Point>)xs.Deserialize(reader);
+
+                polygons = (List<Polygon>)xs.Deserialize(reader);
+
                 reader.Close();
 
-                paintsOnPicture(pointsAll);
+                paintOnPicture(polygons);
             }
+        }
+
+        public void clearAll()
+        {
+            polygons.Clear();
+            pictureBox1.Image = null;
         }
 
         private void clearButton_Click(object sender, EventArgs e)
         {
-            pointsAll.Clear();
-            pictureBox1.Image = null;
+            clearAll();
         }
     }
 }

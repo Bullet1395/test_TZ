@@ -1,0 +1,10 @@
+c:\users\dezmond\documents\visual studio 2017\Projects\test_TZ\test_TZ\bin\Debug\test_TZ.exe.config
+c:\users\dezmond\documents\visual studio 2017\Projects\test_TZ\test_TZ\bin\Debug\test_TZ.exe
+c:\users\dezmond\documents\visual studio 2017\Projects\test_TZ\test_TZ\bin\Debug\test_TZ.pdb
+c:\users\dezmond\documents\visual studio 2017\Projects\test_TZ\test_TZ\obj\Debug\test_TZ.csprojResolveAssemblyReference.cache
+c:\users\dezmond\documents\visual studio 2017\Projects\test_TZ\test_TZ\obj\Debug\test_TZ.Form1.resources
+c:\users\dezmond\documents\visual studio 2017\Projects\test_TZ\test_TZ\obj\Debug\test_TZ.Properties.Resources.resources
+c:\users\dezmond\documents\visual studio 2017\Projects\test_TZ\test_TZ\obj\Debug\test_TZ.csproj.GenerateResource.Cache
+c:\users\dezmond\documents\visual studio 2017\Projects\test_TZ\test_TZ\obj\Debug\test_TZ.exe
+c:\users\dezmond\documents\visual studio 2017\Projects\test_TZ\test_TZ\obj\Debug\test_TZ.pdb
+C:\Users\Dezmond\documents\visual studio 2017\Projects\test_TZ\test_TZ\obj\Debug\test_TZ.csproj.CoreCompileInputs.cache
