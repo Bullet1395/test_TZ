@@ -43,7 +43,7 @@ namespace test_TZ
 
         private void button1_Click(object sender, EventArgs e)
         {
-            if (pointsForPaint.Count != 0)
+            if (pointsForPaint.Count > 2)
             {
                 polygons.Add(polygon);
                 paintOnPicture(pointsForPaint);
@@ -53,7 +53,7 @@ namespace test_TZ
             }
             else
             {
-                MessageBox.Show("Нет доступных точек для рисования, возможно вы находитесь в режиме проверки.", "Обратите внимание", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Точек должно быть не меньше 3! Возможно вы находитесь в режиме проверки.", "Обратите внимание", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
